@@ -1,0 +1,196 @@
+bash -v testing.sh
+module () {  _module_raw "$@" 2>&1
+}
+ml () {  module ml "$@"
+}
+_module_raw () {  eval `/usr/bin/tclsh8.6 /usr/lib/x86_64-linux-gnu/modulecmd.tcl bash "$@"`;
+ _mlstatus=$?;
+ return $_mlstatus
+}
+#!/bin/bash
+#
+# testing.sh - testing script for index module
+#
+# To Use call in terminal:
+#   make test &> testing.out
+#
+# Goes through a lot of test for indexer and
+# indextest. indexer is ran then indextest. we
+# also use the function indexcmp provided by
+# the lab to compare output and results.
+#
+# Wally Magill, Febuary 2023
+
+# Creates nessesary directorie
+mkdir index-outputs
+
+# Define myvalgrind for test
+myvalgrind='valgrind --leak-check=full --show-leak-kinds=all'
+
+# Test 1: no arguments
+./indexer
+Invalid command-line arguments.
+Usage: ./indexer pageDirectory indexFilename
+
+# Test 2: one arguments
+./indexer ~/cs50-dev/shared/tse/output/data/letters-depth-0
+Invalid command-line arguments.
+Usage: ./indexer pageDirectory indexFilename
+
+# Test 3: too many arguments
+./indexer ~/cs50-dev/shared/tse/output/data/letters-depth-0 index-output/letters-index-0.out tooManyArgs
+Invalid command-line arguments.
+Usage: ./indexer pageDirectory indexFilename
+
+# Test 4: invalid pageDirectory (non-existant path)
+./indexer ~/cs50-dev/shared/tse/output/data/letters-depth-100 index-outputs/letters-index-0.out
+Invalid pageDirectory. The pageDirectory does not have a readable '.crawler' file.
+
+# Test 5: invalid pageDirectory (not a crawler directory)
+./indexer ~/cs50-dev/shared/tse/output/data index-outputs/letters-index-0.out
+Invalid pageDirectory. The pageDirectory does not have a readable '.crawler' file.
+
+# Test 6: invalid indexFilename (non-existant path)
+./indexer ~/cs50-dev/shared/tse/output/data/letters-depth-0 not-index-outputs/letters-index-0.out
+Invalid indexFilename. The indexfilename can not be written in.
+
+# Test 7: invalid indexFilename (read-only directory)
+./indexer ~/cs50-dev/shared/tse/output/data/letters-depth-0 ~/cs50-dev/shared/tse/output/data/letters-depth-0
+Invalid indexFilename. The indexfilename can not be written in.
+
+# Test 8: invalid indexFilename (existing, read-only file)
+./indexer ~/cs50-dev/shared/tse/output/data/letters-depth-0 ~/cs50-dev/shared/tse/output/data/letters-depth-0/1
+Invalid indexFilename. The indexfilename can not be written in.
+
+
+# Test 9: letters-0
+
+# Test 9a: indexer on letters-0
+./indexer ~/cs50-dev/shared/tse/output/data/letters-depth-0 index-outputs/letters-index-0.out
+
+# Test 9b: comparing output for indexer letters-0
+~/cs50-dev/shared/tse/indexcmp ~/cs50-dev/shared/tse/output/data/letters-index-0 index-outputs/letters-index-0.out
+
+# Test 9c: indextest on indexer for letters-0
+./indextest index-outputs/letters-index-0.out index-outputs/letters-index-0.test
+
+# Test 9d: comparing output for indextest letters-0
+~/cs50-dev/shared/tse/indexcmp ~/cs50-dev/shared/tse/output/data/letters-index-0 index-outputs/letters-index-0.test
+
+
+# Test 10: letters-6
+
+# Test 10a: indexer on letters-6
+./indexer ~/cs50-dev/shared/tse/output/data/letters-depth-6 index-outputs/letters-index-6.out
+
+# Test 10b: comparing output for indexer letters-6
+~/cs50-dev/shared/tse/indexcmp ~/cs50-dev/shared/tse/output/data/letters-index-6 index-outputs/letters-index-6.out
+
+# Test 10c: indextest on indexer for letters-6
+./indextest index-outputs/letters-index-6.out index-outputs/letters-index-6.test
+
+# Test 10d: comparing output for indextest letters-6
+~/cs50-dev/shared/tse/indexcmp ~/cs50-dev/shared/tse/output/data/letters-index-6 index-outputs/letters-index-6.test
+
+
+# Test 11: toscrape-0
+
+# Test 11a: indexer on toscrape-0
+./indexer ~/cs50-dev/shared/tse/output/data/toscrape-depth-0 index-outputs/toscrape-index-0.out
+
+# Test 11b: comparing output for indexer toscrape-0
+~/cs50-dev/shared/tse/indexcmp ~/cs50-dev/shared/tse/output/data/toscrape-index-0 index-outputs/toscrape-index-0.out
+
+# Test 11c: indextest on indexer for toscrape-0
+./indextest index-outputs/toscrape-index-0.out index-outputs/toscrape-index-0.test
+
+# Test 11d: comparing output for indextest toscrape-0
+~/cs50-dev/shared/tse/indexcmp ~/cs50-dev/shared/tse/output/data/toscrape-index-0 index-outputs/toscrape-index-0.test
+
+
+# Test 12: toscrape-1
+
+# Test 12a: indexer on toscrape-1
+./indexer ~/cs50-dev/shared/tse/output/data/toscrape-depth-1 index-outputs/toscrape-index-1.out
+
+# Test 12b: comparing output for indexer toscrape-1
+~/cs50-dev/shared/tse/indexcmp ~/cs50-dev/shared/tse/output/data/toscrape-index-1 index-outputs/toscrape-index-1.out
+
+# Test 12c: indextest on indexer for toscrape-1
+./indextest index-outputs/toscrape-index-1.out index-outputs/toscrape-index-1.test
+
+# Test 12d: comparing output for indextest toscrape-1
+~/cs50-dev/shared/tse/indexcmp ~/cs50-dev/shared/tse/output/data/toscrape-index-1 index-outputs/toscrape-index-1.test
+
+
+# Test 13: wikipedia-0
+
+# Test 13a: indexer on wikipedia-0
+./indexer ~/cs50-dev/shared/tse/output/data/wikipedia-depth-0 index-outputs/wikipedia-index-0.out
+
+# Test 13b: comparing output for indexer wikipedia-0
+~/cs50-dev/shared/tse/indexcmp ~/cs50-dev/shared/tse/output/data/wikipedia-index-0 index-outputs/wikipedia-index-0.out
+
+# Test 13c: indextest on indexer for wikipedia-0
+./indextest index-outputs/wikipedia-index-0.out index-outputs/wikipedia-index-0.test
+
+# Test 13d: comparing output for indextest wikipedia-0
+~/cs50-dev/shared/tse/indexcmp ~/cs50-dev/shared/tse/output/data/wikipedia-index-0 index-outputs/wikipedia-index-0.test
+
+
+# Test 14: wikipedia-1
+
+# Test 14a: indexer on wikipedia-1
+./indexer ~/cs50-dev/shared/tse/output/data/wikipedia-depth-1 index-outputs/wikipedia-index-1.out
+
+# Test 14b: comparing output for indexer wikipedia-1
+~/cs50-dev/shared/tse/indexcmp ~/cs50-dev/shared/tse/output/data/wikipedia-index-1 index-outputs/wikipedia-index-1.out
+
+# Test 14c: indextest on indexer for wikipedia-1
+./indextest index-outputs/wikipedia-index-1.out index-outputs/wikipedia-index-1.test
+
+# Test 14d: comparing output for indextest wikipedia-1
+~/cs50-dev/shared/tse/indexcmp ~/cs50-dev/shared/tse/output/data/wikipedia-index-1 index-outputs/wikipedia-index-1.test
+
+
+# Test 15: myvalgrind
+
+# Test 15a: myvalgrind indexer on toscrape-1
+$myvalgrind ./indexer ~/cs50-dev/shared/tse/output/data/toscrape-depth-1 index-outputs/toscrape-index-1.out
+==2828607== Memcheck, a memory error detector
+==2828607== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==2828607== Using Valgrind-3.18.1 and LibVEX; rerun with -h for copyright info
+==2828607== Command: ./indexer /thayerfs/home/f0055t2/cs50-dev/shared/tse/output/data/toscrape-depth-1 index-outputs/toscrape-index-1.out
+==2828607== 
+==2828607== 
+==2828607== HEAP SUMMARY:
+==2828607==     in use at exit: 0 bytes in 0 blocks
+==2828607==   total heap usage: 2,335,669 allocs, 2,335,669 frees, 42,744,157,652 bytes allocated
+==2828607== 
+==2828607== All heap blocks were freed -- no leaks are possible
+==2828607== 
+==2828607== For lists of detected and suppressed errors, rerun with: -s
+==2828607== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+
+# Test 15b: comparing output for indexer toscrape-1
+~/cs50-dev/shared/tse/indexcmp ~/cs50-dev/shared/tse/output/data/toscrape-index-1 index-outputs/toscrape-index-1.out
+
+# Test 15c: myvalgrind indextest on indexer for toscrape-1
+$myvalgrind ./indextest index-outputs/toscrape-index-1.out index-outputs/toscrape-index-1.test
+==2828884== Memcheck, a memory error detector
+==2828884== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==2828884== Using Valgrind-3.18.1 and LibVEX; rerun with -h for copyright info
+==2828884== Command: ./indextest index-outputs/toscrape-index-1.out index-outputs/toscrape-index-1.test
+==2828884== 
+==2828884== 
+==2828884== HEAP SUMMARY:
+==2828884==     in use at exit: 0 bytes in 0 blocks
+==2828884==   total heap usage: 19,404 allocs, 19,404 frees, 460,233 bytes allocated
+==2828884== 
+==2828884== All heap blocks were freed -- no leaks are possible
+==2828884== 
+==2828884== For lists of detected and suppressed errors, rerun with: -s
+==2828884== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+
+# Test 15d: comparing output for indextest toscrape-1
+~/cs50-dev/shared/tse/indexcmp ~/cs50-dev/shared/tse/output/data/toscrape-index-1 index-outputs/toscrape-index-1.test
