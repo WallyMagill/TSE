@@ -2,7 +2,7 @@
 
 The **Tiny Search Engine (TSE)** is a modular C-based backend system that indexes webpages and processes search queries to return ranked document results. It supports logical operators (`AND`, `OR`) and provides robust, memory-safe performance with defensive coding practices and rigorous testing.
 
-## 🚀 Features
+## Features
 
 - Parses and validates user queries with proper logical structure
 - Supports operator precedence (`AND` before `OR`)
@@ -11,7 +11,7 @@ The **Tiny Search Engine (TSE)** is a modular C-based backend system that indexe
 - Defensive programming style: handles `NULL` pointers and improper inputs gracefully
 - Fully memory-leak-free with Valgrind verification
 
-## 🧠 How It Works
+## How It Works
 
 1. **Index Loading**: Loads an inverted index from disk (created using a separate crawler and indexer).
 2. **Query Processing**:
@@ -24,7 +24,7 @@ The **Tiny Search Engine (TSE)** is a modular C-based backend system that indexe
    - Results are sorted and displayed by relevance
 4. **Testing**: Includes comprehensive bash test scripts and regression testing tools
 
-## 🛠 Technologies
+## Technologies
 
 - **Language**: C
 - **Build Tools**: Make, Bash
@@ -32,7 +32,7 @@ The **Tiny Search Engine (TSE)** is a modular C-based backend system that indexe
 - **Memory Management**: Manual (verified with Valgrind)
 - **Environment**: Unix-based terminal
 
-## 📸 Example Output
+## Example Output
 
 ```bash
 Query? climate AND change
