@@ -40,3 +40,32 @@ Query? climate AND change
 1. ./pages/page17.html (score: 8)
 2. ./pages/page3.html (score: 6)
 3. ./pages/page9.html (score: 4)
+```
+
+## Directory Structure
+
+```
+TSE/
+├── querier/             # Main query engine logic
+│   ├── querier.c        # Query processor
+│   ├── DESIGN.md        # High-level system design
+│   ├── IMPLEMENTATION.md# Implementation notes and testing plan
+│   ├── testing.sh       # Automated tests
+│   └── Makefile
+├── common/              # Shared modules: hashtable, index, pagedir
+└── data/                # Pre-indexed files (not committed)
+```
+
+## Testing
+
+Run the full test suite:
+
+```bash
+make test
+```
+
+Check memory safety:
+
+```bash
+valgrind ./querier [args]
+```
