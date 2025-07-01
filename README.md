@@ -1,39 +1,36 @@
 # Tiny Search Engine
 
-The **Tiny Search Engine (TSE)** is a modular C-based backend system that indexes webpages and processes search queries to return ranked document results. It supports logical operators (`AND`, `OR`) and provides robust, memory-safe performance with defensive coding practices and rigorous testing.
+Tiny Search Engine is a lightweight command-line search backend written in C. It indexes webpages and processes textual queries to return ranked document results. The codebase is modular and memory safe—Valgrind shows no leaks.
 
-## Features
-
-- Parses and validates user queries with proper logical structure
-- Supports operator precedence (`AND` before `OR`)
-- Performs intersection and union of indexed document sets
-- Ranks and sorts search results based on document relevance
-- Defensive programming style: handles `NULL` pointers and improper inputs gracefully
-- Fully memory-leak-free with Valgrind verification
+## Key Features
+- Inverted index built with custom hashtables and counter sets
+- Query parser supporting `AND` and `OR` with correct precedence
+- Scores documents and sorts results by relevance
+- Separate crawler, indexer and querier modules
+- Defensive coding practices and thorough testing
 
 ## How It Works
-
-1. **Index Loading**: Loads an inverted index from disk (created using a separate crawler and indexer).
-2. **Query Processing**:
-   - Validates query format and normalizes input
-   - Tokenizes the query and applies precedence rules
-   - Processes each query using custom hashtable and counter structures
-3. **Ranking**:
-   - For `AND`, computes the minimum score intersection
-   - For `OR`, computes the sum score union
-   - Results are sorted and displayed by relevance
-4. **Testing**: Includes comprehensive bash test scripts and regression testing tools
+1. **Index Loading** – the querier reads a prebuilt inverted index from disk.
+2. **Query Parsing** – user input is normalized, tokenized and validated; `AND` is processed before `OR`.
+3. **Scoring** – documents are intersected or unioned using their scores and then sorted for display.
 
 ## Technologies
-
 - **Language**: C
-- **Build Tools**: Make, Bash
-- **Data Structures**: Custom Hash Tables, Counters
-- **Memory Management**: Manual (verified with Valgrind)
-- **Environment**: Unix-based terminal
+- **Data Structures**: custom hashtables and counters
+- **Build Tools**: Make and Bash
+- **Memory Safety**: verified with Valgrind
+
+## Build and Run
+```bash
+# compile everything
+make
+# build the querier module
+make -C querier
+# run the search engine
+./querier <pageDirectory> <indexFilename>
+```
 
 ## Example Output
-
 ```bash
 Query? climate AND change
 # Matching 3 documents
@@ -43,29 +40,21 @@ Query? climate AND change
 ```
 
 ## Directory Structure
-
 ```
 TSE/
-├── querier/             # Main query engine logic
-│   ├── querier.c        # Query processor
-│   ├── DESIGN.md        # High-level system design
-│   ├── IMPLEMENTATION.md# Implementation notes and testing plan
-│   ├── testing.sh       # Automated tests
-│   └── Makefile
-├── common/              # Shared modules: hashtable, index, pagedir
-└── data/                # Pre-indexed files (not committed)
+├── crawler/   # web crawler
+├── indexer/   # builds the index
+├── querier/   # query engine
+├── common/    # shared modules
+└── libcs50/   # support library
 ```
 
 ## Testing
-
-Run the full test suite:
-
+Run the query module tests:
 ```bash
-make test
+make -C querier test
 ```
-
-Check memory safety:
-
+Check memory safety (Valgrind required):
 ```bash
-valgrind ./querier [args]
+valgrind ./querier <pageDirectory> <indexFilename>
 ```
